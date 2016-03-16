@@ -45,7 +45,7 @@ function eventInput(state){
 
 var keys = {};
 
-keys.A = 'A'.charCodeAt(0),
+keys.A = 'A'.charCodeAt(0);
 keys.B = 'B'.charCodeAt(0);
 
 var state = App();
