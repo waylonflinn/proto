@@ -18,7 +18,9 @@ var hg = require('mercury'),
 
 function App(){
 	return hg.state({
-		"text" : hg.value("hello"),
+		"outer" : hg.value(false),
+		"inner" : hg.value(false),
+		"input" : hg.value(false),
 		"channels" : {
 			eventOuterDiv : eventOuterDiv,
 			eventDiv : eventDiv,
@@ -29,13 +31,16 @@ function App(){
 
 function eventOuterDiv(state){
 	console.log("outer div");
+	state.outer.set(true);
 }
 function eventDiv(state){
 	console.log("  inner div");
+	state.inner.set(true);
 }
 
 function eventInput(state){
 	console.log("    input elem");
+	state.input.set(true);
 }
 
 var keys = {};
@@ -43,17 +48,27 @@ var keys = {};
 keys.A = 'A'.charCodeAt(0),
 keys.B = 'B'.charCodeAt(0);
 
+var state = App();
+
+d = hg.Delegator();
+// this always fires first
+d.addGlobalEventListener("keydown", function(ev){
+	state.outer.set(false);
+	state.inner.set(false);
+	state.input.set(false);
+});
+
 App.render = function(state){
 	return h('div.mercury',
-		{'ev-keydown' : hg.send(state.channels.eventOuterDiv), 'tabIndex' : 0},
+		{'ev-keydown' : hg.send(state.channels.eventOuterDiv), 'tabIndex' : 0, "className" : state.outer ? "active" : ""},
 		h('div',
-			{'ev-keydown' : hg.sendKey(state.channels.eventDiv, {}, {key: keys.A, startPropagation: true}), 'tabIndex' : 1},
+			{'ev-keydown' : hg.sendKey(state.channels.eventDiv, {}, {key: keys.B, startPropagation: true}), 'tabIndex' : 1, "className" : state.inner ? "active" : ""},
 			h('input',
-				{'ev-keydown' : hg.sendKey(state.channels.eventInput, {}, {key: keys.A, startPropagation: true})},
+				{'ev-keydown' : hg.sendKey(state.channels.eventInput, {}, {key: keys.A, startPropagation: true}), "className" : state.input ? "active" : ""},
 				state.text)
 		)
 	);
 }
 //
 
-hg.app(document.body, App(), App.render);
+hg.app(document.body, state, App.render);

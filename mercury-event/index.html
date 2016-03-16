@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <head>
 	<style>
-		div.mercury {
-		}
 		div {
 			padding: 30px;
 			border: 1px solid black;
-		}
-		div:focus {
-			border: 1px solid gold;
 			outline: none;
 		}
 		input {
+			border: 1px solid black;
 			height: 40px;
 			line-height: 40px;
 			font-size: 16pt;
-		}
-		input:focus {
-			border: 1px solid gold;
 			outline: none;
+		}
+		.active:focus {
+			border-color: green;
+		}
+		:focus {
+			border-color: blue;
+		}
+		.active {
+			border-color: gold;
 		}
 	</style>
 </head>
