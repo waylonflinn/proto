@@ -24,9 +24,16 @@ function App(){
 		"channels" : {
 			eventOuterDiv : eventOuterDiv,
 			eventDiv : eventDiv,
-			eventInput : eventInput
+			eventInput : eventInput,
+			reset : reset
 		}
 	});
+}
+
+function reset(state){
+	state.outer.set(false);
+	state.inner.set(false);
+	state.input.set(false);
 }
 
 function eventOuterDiv(state){
@@ -52,11 +59,7 @@ var state = App();
 
 d = hg.Delegator();
 // this always fires first
-d.addGlobalEventListener("keydown", function(ev){
-	state.outer.set(false);
-	state.inner.set(false);
-	state.input.set(false);
-});
+d.addGlobalEventListener("keydown", hg.send(state().channels.reset));
 
 App.render = function(state){
 	return h('div.mercury',
